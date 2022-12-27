@@ -1,15 +1,23 @@
 struct Solution;
-use itertools::Itertools;
-use itertools_num::ItertoolsNum;
 
 impl Solution {
     pub fn maximum_bags(capacity: Vec<i32>, rocks: Vec<i32>, additional_rocks: i32) -> i32 {
-        capacity
+        let mut remaining: Vec<_> = capacity
             .into_iter()
             .zip(rocks)
             .map(|(c, r)| c - r)
-            .sorted()
-            .cumsum::<i32>()
+            .collect();
+
+        remaining.sort();
+
+        let mut acc: i32 = 0;
+        remaining
+            .into_iter()
+            .map(|v| {
+                // no cumsum in stdlib, yet
+                acc += v;
+                acc
+            })
             .take_while(|csum| *csum <= additional_rocks)
             .count() as i32
     }
